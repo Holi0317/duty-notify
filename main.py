@@ -9,9 +9,12 @@ from apiclient.discovery import build
 from httplib2 import Http
 
 from utils.logger import logger
+from utils.endpoint import Endpoint
 
-MORNING_URL = 'http://mail.stmarks.edu.hk/~smssmf/morning.htm'
-ASSEMBLY_URL = 'http://mail.stmarks.edu.hk/~smssmf/assembly.htm'
+ENDPOINTS = [
+    Endpoint('http://mail.stmarks.edu.hk/~smssmf/morning.htm', 'Morning'),
+    Endpoint('http://mail.stmarks.edu.hk/~smssmf/assembly.htm', 'Assembly')
+]
 
 OAUTH2_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 
@@ -20,6 +23,7 @@ def main():
     logger.info('Started.')
 
     http = make_google()
+    map(lambda x: x.request(), ENDPOINTS)
 
 
 def make_google():
