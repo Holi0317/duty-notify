@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# LICENSE: MIT
 
 import argparse
 import json
