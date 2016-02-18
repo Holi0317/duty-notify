@@ -1,0 +1,17 @@
+Good day,
+
+This email is sent from duty-notify. I am here to remind you that there is match(es) of your given query.
+
+The match(es) are as follows.
+
+======================================
+
+{matches}
+
+======================================
+
+This email is sent by a stupid bot. He does not have enough intelligence to know your reply.
+So please don't confuse him by replying this email.
+
+Regards,
+duty-notify.

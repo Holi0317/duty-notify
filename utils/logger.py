@@ -7,4 +7,4 @@ formatter = logging.Formatter(
     '%H:%M:%S')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
