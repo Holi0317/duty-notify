@@ -44,7 +44,6 @@ def main():
 
     for endpoint in ENDPOINTS:
         logger.debug('Processing endpoint: %s', endpoint.name)
-        endpoint.request()
         for user in users:
             logger.debug('Processing user: %s', user['name'])
             if user['name'] in endpoint:
