@@ -16,11 +16,14 @@ from httplib2 import Http
 
 from utils.logger import logger
 from utils.endpoint import Endpoint
+from utils.cache import make_cache
 
 MAIL_SUBJECT = 'Notification from duty-notify'
 CONFIG_FILE = 'config.json'
 CLIENT_ID_FILE = 'client_id.json'
 CREDENTIALS_FILE = 'credentials'
+# Cache dir is defined in utils.cache
+# CACHE_DIR = 'cache'
 ENDPOINTS = [
     Endpoint('http://mail.stmarks.edu.hk/~smssmf/morning.htm', 'Morning'),
     Endpoint('http://mail.stmarks.edu.hk/~smssmf/assembly.htm', 'Assembly')
@@ -36,14 +39,16 @@ def main():
     gmail_send = gmail.users().messages().send
     email_messages = {}
 
-    map(lambda x: x.request(), ENDPOINTS)
-
     with open(CONFIG_FILE, 'r') as file:
         users = json.load(file)
     logger.debug('User loaded')
 
     for endpoint in ENDPOINTS:
         logger.debug('Processing endpoint: %s', endpoint.name)
+        endpoint.request()
+        if not make_cache(endpoint.name, endpoint._text):
+            logger.debug('Cached. Will not process.')
+            continue
         for user in users:
             logger.debug('Processing user: %s', user['name'])
             if user['name'] in endpoint:
@@ -119,6 +124,7 @@ def consume_message_queue(send, queue):
             send(userId='me', body=message).execute()
         except errors.HttpError as error:
             logger.fatal('Error when sending a message. Error: %s', error)
+
 
 if __name__ == "__main__":
     main()

@@ -72,3 +72,5 @@ target/
 client_id.json
 credentials
 config.json
+
+cache/
