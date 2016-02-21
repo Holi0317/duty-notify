@@ -44,20 +44,20 @@ def main():
     logger.debug('User loaded')
 
     for endpoint in ENDPOINTS:
-        logger.debug('Processing endpoint: %s', endpoint.name)
+        logger.info('Processing endpoint: %s', endpoint.name)
         endpoint.request()
         if not make_cache(endpoint.name, endpoint._text):
-            logger.debug('Cached. Will not process.')
+            logger.debug('Content is same with cached. Skipping.')
             continue
         for user in users:
             logger.debug('Processing user: %s', user['name'])
             if user['name'] in endpoint:
-                logger.debug('User in endpoint!')
+                logger.debug('User in endpoint.')
                 message = make_message('match', regexp=user['name'],
                                        name=endpoint.name, url=endpoint.url)
                 email_messages.setdefault(user['email'], []).append(message)
 
-    logger.debug('Done fetching endpoints. Now send email.')
+    logger.info('Done fetching endpoints. Now drafting email.')
 
     queue = []
     for recepient, messages in email_messages.items():
@@ -71,8 +71,7 @@ def main():
         raw = base64.b64encode(message.as_string().encode())
         queue.append({'raw': raw.decode()})
 
-    logger.debug(queue)
-
+    logger.info('%d email(s) have been drafted. Sending.', len(queue))
     consume_message_queue(gmail_send, queue)
     logger.info('Done.')
 
@@ -123,7 +122,7 @@ def consume_message_queue(send, queue):
         try:
             send(userId='me', body=message).execute()
         except errors.HttpError as error:
-            logger.fatal('Error when sending a message. Error: %s', error)
+            logger.fatal('Error when sending a email. Error: %s', error)
 
 
 if __name__ == "__main__":
