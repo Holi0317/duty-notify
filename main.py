@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # LICENSE: MIT
 
-import argparse
 import json
 import os
 import base64
 from email.mime.text import MIMEText
 
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.file import Storage
-from oauth2client import tools
+from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 from apiclient import errors
 from httplib2 import Http
@@ -20,8 +17,7 @@ from utils.cache import make_cache
 
 MAIL_SUBJECT = 'Notification from duty-notify'
 CONFIG_FILE = 'config.json'
-CLIENT_ID_FILE = 'client_id.json'
-CREDENTIALS_FILE = 'credentials'
+CREDENTIALS_FILE = 'credentials.json'
 # Cache dir is defined in utils.cache
 # CACHE_DIR = 'cache'
 ENDPOINTS = [
@@ -83,20 +79,8 @@ def make_google():
 
     return -- httplib2 http object with Google OAuth2 authorized.
     """
-    storage = Storage(CREDENTIALS_FILE)
-    creds = storage.get()
-
-    if not creds or creds.invalid:
-
-        parser = argparse.ArgumentParser(parents=[tools.argparser])
-        flags = parser.parse_args()
-
-        flow = flow_from_clientsecrets(CLIENT_ID_FILE,
-                                       scope=OAUTH2_SCOPES)
-        flow.params['access_type'] = 'offline'
-        creds = tools.run_flow(flow, storage, flags)
-        storage.put(creds)
-
+    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE,
+                                                             OAUTH2_SCOPES)
     return creds.authorize(Http())
 
 

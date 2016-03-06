@@ -69,8 +69,7 @@ target/
 .python-version
 
 # Secret informations
-client_id.json
-credentials
+credentials.json
 config.json
 
 cache/
